@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayurvedic Food Consciousness Guide</title>
+
+  <!-- Essential CDN Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: 'hsl(140, 70%, 95%)',
+              100: 'hsl(140, 70%, 85%)',
+              200: 'hsl(140, 70%, 75%)',
+              300: 'hsl(140, 70%, 65%)',
+              400: 'hsl(140, 70%, 55%)',
+              500: 'hsl(140, 70%, 40%)',
+              600: 'hsl(140, 70%, 35%)',
+              700: 'hsl(140, 70%, 25%)',
+              800: 'hsl(140, 70%, 15%)',
+              900: 'hsl(140, 70%, 10%)'
+            },
+            accent: {
+              50: 'hsl(170, 65%, 95%)',
+              100: 'hsl(170, 65%, 85%)',
+              200: 'hsl(170, 65%, 75%)',
+              300: 'hsl(170, 65%, 65%)',
+              400: 'hsl(170, 65%, 60%)',
+              500: 'hsl(170, 65%, 55%)',
+              600: 'hsl(170, 65%, 50%)',
+              700: 'hsl(170, 65%, 40%)',
+              800: 'hsl(170, 65%, 30%)',
+              900: 'hsl(170, 65%, 20%)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <!-- Preline UI Components -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.js"></script>
+
+  <!-- Micro-interactions & Custom Styles -->
+  <style>
+    html { scroll-behavior: smooth; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+
+    .btn-interactive {
+      transition: all 0.2s ease-out;
+    }
+    
+    .btn-interactive:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-interactive:active {
+      transform: scale(0.95);
+    }
+
+    .card-interactive {
+      transition: all 0.3s ease-out;
+      border: 1px solid transparent;
+      --border-lightness: 40%;
+    }
+
+    .dark .card-interactive {
+      --border-lightness: 60%;
+    }
+
+    .card-interactive:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      filter: brightness(0.98);
+    }
+    
+    /* Primary colored cards */
+    .card-interactive[class*="primary"]:hover,
+    .card-interactive[class*="white"]:hover,
+    .card-interactive[class*="gray-"]:hover {
+      border-color: hsl(140, 70%, var(--border-lightness));
+    }
+    
+    /* Accent colored cards */
+    .card-interactive[class*="accent"]:hover {
+      border-color: hsl(170, 65%, var(--border-lightness));
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      margin: 2rem auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 700px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 1rem;
+      position: relative;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .dark .modal-content {
+      background-color: rgba(17, 24, 39, 0.95);
+      color: white;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #aaa;
+      transition: color 0.3s;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+    }
+
+    .dark .close:hover,
+    .dark .close:focus {
+      color: #fff;
+    }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .food-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .dark .food-card {
+      background: linear-gradient(135deg, rgba(31, 41, 55, 0.9), rgba(31, 41, 55, 0.7));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .food-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .food-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .food-info {
+      padding: 1rem;
+    }
+
+    .food-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: hsl(140, 70%, 35%);
+      margin-bottom: 0.5rem;
+    }
+
+    .dark .food-title {
+      color: hsl(140, 70%, 75%);
+    }
+
+    .food-summary {
+      font-size: 0.95rem;
+      color: #4b5563;
+      line-height: 1.4;
+    }
+
+    .dark .food-summary {
+      color: #cbd5e1;
+    }
+
+    .category-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid hsl(140, 70%, 40%);
+      background: white;
+      color: hsl(140, 70%, 35%);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .dark .tab-button {
+      background: #1f2937;
+      color: hsl(140, 70%, 75%);
+      border-color: hsl(140, 70%, 55%);
+    }
+
+    .tab-button.active {
+      background: hsl(140, 70%, 40%);
+      color: white;
+    }
+
+    .dark .tab-button.active {
+      background: hsl(140, 70%, 55%);
+      color: white;
+    }
+  </style>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      document.getElementById('sunIcon').style.display = isDark ? 'block' : 'none';
+      document.getElementById('moonIcon').style.display = isDark ? 'none' : 'block';
+    }
+
+    function initCitationSystem() {
+      let i = 1, map = new Map();
+      document.querySelectorAll('[data-ref]').forEach(el => {
+        if (el.dataset.citationProcessed) return;
+        const raw = (el.getAttribute('data-ref')||'').trim();
+        if (!raw) return;
+
+        const parts = raw.split('|');
+        const url = parts[0].trim();
+        const idx = (parts[1]||'').trim() || map.get(raw) || (map.set(raw, String(i)), String(i++));
+
+        if (!el.textContent || !el.textContent.trim()) { el.dataset.citationProcessed = 'true'; return; }
+
+        const btn = document.createElement('sup'); btn.textContent = String(idx);
+        Object.assign(btn.style, { fontSize:'8px', color:'#fff', cursor:'pointer', top: '1px', fontWeight:'bold', backgroundColor:'#059669', borderRadius:'50%', transition:'all .15s', userSelect:'none', minWidth:'19px', height:'19px', marginLeft:'6px', display:'inline-flex', alignItems:'center', justifyContent:'center', boxShadow:'0 1px 3px rgba(0,0,0,.2)', lineHeight:'1'});
+        btn.addEventListener('mouseenter', ()=> Object.assign(btn.style, { backgroundColor:'#047857', transform:'scale(1.12)' }));
+        btn.addEventListener('mouseleave', ()=> Object.assign(btn.style, { backgroundColor:'#059669', transform:'scale(1)' }));
+        btn.addEventListener('click', e=>{ e.preventDefault(); e.stopPropagation(); window.open(url, '_blank'); });
+
+        el.appendChild(btn); el.dataset.citationProcessed = 'true';
+      });
+    }
+
+    function openModal(food) {
+      const modal = document.getElementById('foodModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalSummary = document.getElementById('modalSummary');
+      
+      modalTitle.textContent = food.title;
+      modalSummary.textContent = food.description;
+      modal.style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('foodModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside content
+    window.onclick = function(event) {
+      const modal = document.getElementById('foodModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    // Filter food items by category
+    function filterCategory(category) {
+      const buttons = document.querySelectorAll('.tab-button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const cards = document.querySelectorAll('.food-card');
+      cards.forEach(card => {
+        if (category === 'All' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Food data
+    const foods = [
+      {
+        category: 'Fruits',
+        title: 'Fresh Apple',
+        image: 'https://cdn.qwenlm.ai/0fa0dd7b-15a3-478b-a540-4fcb662ad417/cd9237d7-7be2-44ab-845d-342d19b3c190/2a99d789-b50b-4388-a2be-6dad83133704.png?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXNvdXJjZV91c2VyX2lkIjoiMGZhMGRkN2ItMTVhMy00NzhiLWE1NDAtNGZjYjY2MmFkNDE3IiwicmVzb3VyY2VfaWQiOiJjZDkyMzdkNy03YmUyLTQ0YWItODQ1ZC0zNDJkMTliM2MxOTAiLCJyZXNvdXJjZV9jaGF0X2lkIjpudWxsfQ.-ujIT1s2AATzLrRUl0DsJZOzhhTzyRH7gT6mIFrfE0M',
+        summary: 'Pure, light, and abundant in prana. Promotes mental clarity, tranquility, and overall well-being.',
+        description: 'Fresh apples are quintessential sattvic foods that embody the essence of purity and life force. Their crisp texture and natural sweetness provide sustained energy without overstimulation. Regular consumption of fresh apples enhances digestive fire gently, allowing nutrients to be absorbed efficiently while maintaining mental clarity. The fiber content promotes steady blood sugar levels, preventing the mental fog that accompanies glucose spikes. Apples support the nervous system by providing essential vitamins and minerals that nourish the brain, fostering a sense of grounded awareness and emotional stability.'
+      },
+      {
+        category: 'Fruits',
+        title: 'Ripe Banana',
+        image: '<|imagePlaceholder1|>',
+        summary: 'Sweet, juicy, and fattening. Increases life duration, purifies existence, and gives strength, health, happiness, and satisfaction.',
+        description: 'Ripe bananas exemplify the sattvic principle of foods that are sweet, juicy, and naturally nourishing. Their dense nutritional profile provides immediate energy while supporting long-term vitality. Bananas are rich in potassium, which helps regulate nerve impulses and muscle contractions, promoting a calm yet energized state of consciousness. The natural sugars in ripe bananas are absorbed gradually, preventing sudden shifts in mood or energy. Regular consumption supports the development of patience, compassion, and mental resilience, qualities associated with elevated sattva.'
+      },
+      {
+        category: 'Vegetables',
+        title: 'Fresh Spinach',
+        image: '<|imagePlaceholder2|>',
+        summary: 'Light and fresh. Promotes clarity, harmony, and peace in the mind and body.',
+        description: 'Fresh spinach represents the sattvic ideal of leafy greens that cleanse and rejuvenate the body\'s subtle channels. Its vibrant green color indicates high chlorophyll content, which purifies the blood and supports the liver\'s detoxification processes. Spinach is rich in iron and folate, nutrients essential for healthy blood formation and neurological function. The gentle bitterness of spinach stimulates digestion without causing irritation, allowing for optimal absorption of nutrients that support mental clarity. Regular consumption helps cultivate inner stillness and emotional balance.'
+      },
+      {
+        category: 'Vegetables',
+        title: 'Crunchy Celery',
+        image: '<|imagePlaceholder3|>',
+        summary: 'Pure, light, and fresh. Promotes clarity, harmony, and peace in the mind and body.',
+        description: 'Celery embodies the sattvic principle of foods that are light yet deeply nourishing. Its high water content and mineral profile help maintain proper hydration and electrolyte balance, which are crucial for optimal brain function. The natural sodium in celery supports nerve transmission and muscle relaxation, promoting a calm yet alert state of consciousness. Celery\'s mild flavor and crunchy texture encourage mindful eating, helping practitioners develop awareness of the present moment. Its cooling nature soothes inflammation throughout the body, supporting the nervous system\'s ability to process experiences with clarity.'
+      },
+      {
+        category: 'Nuts & Seeds',
+        title: 'Almonds',
+        image: '<|imagePlaceholder4|>',
+        summary: 'Pure, light, and abundant in prana. Promotes mental clarity, tranquility, and overall well-being.',
+        description: 'Almonds are revered in Ayurveda as one of the most sattvic nuts, offering concentrated nutrition without the heaviness that can cloud consciousness. Their high content of healthy fats, protein, and vitamin E supports brain health and protects against oxidative stress. Almonds are particularly beneficial for vata constitution, helping to ground scattered energy and promote mental focus. The act of chewing almonds slowly encourages mindful eating practices, fostering awareness of satiation and gratitude. Regular consumption supports the development of patience, wisdom, and emotional stability.'
+      },
+      {
+        category: 'Nuts & Seeds',
+        title: 'Walnuts',
+        image: '<|imagePlaceholder5|>',
+        summary: 'Pure, light, and abundant in prana. Promotes mental clarity, tranquility, and overall well-being.',
+        description: 'Walnuts are prized for their resemblance to the human brain and their ability to support cognitive function. Rich in omega-3 fatty acids, walnuts nourish the nervous system and support the production of neurotransmitters that promote emotional balance. Their slightly bitter taste stimulates digestion while their oily nature lubricates the joints and tissues, supporting overall vitality. Walnuts are particularly beneficial for individuals experiencing mental fatigue or difficulty concentrating. Regular consumption helps develop mental sharpness while maintaining emotional equilibrium.'
+      },
+      {
+        category: 'Grains & Legumes',
+        title: 'Quinoa',
+        image: '<|imagePlaceholder6|>',
+        summary: 'Pure, light, and abundant in prana. Promotes mental clarity, tranquility, and overall well-being.',
+        description: 'Quinoa stands as a complete protein source that supports both physical strength and mental clarity. Its balanced amino acid profile provides the building blocks for neurotransmitter synthesis, supporting stable mood and cognitive function. Quinoa is easily digestible compared to many other grains, making it suitable for regular consumption without causing heaviness or sluggishness. The grain\'s nutty flavor and satisfying texture make it a grounding food that supports the development of contentment and inner peace. Regular consumption helps maintain steady energy levels throughout the day.'
+      },
+      {
+        category: 'Grains & Legumes',
+        title: 'Brown Rice',
+        image: '<|imagePlaceholder7|>',
+        summary: 'Pure, light, and abundant in prana. Promotes mental clarity, tranquility, and overall well-being.',
+        description: 'Brown rice represents the sattvic principle of whole grains that provide sustained energy without overstimulation. Its complex carbohydrates release glucose gradually into the bloodstream, preventing the mental fog and mood swings associated with refined grains. Brown rice is rich in B-vitamins, which support the nervous system and help convert food into usable energy. The fiber content promotes healthy digestion and elimination, allowing the body to focus its energy on higher functions. Regular consumption supports the development of patience, stability, and emotional resilience.'
+      },
+      {
+        category: 'Natural Sweeteners',
+        title: 'Raw Honey',
+        image: '<|imagePlaceholder8|>',
+        summary: 'Pure, light, and abundant in prana. Promotes mental clarity, tranquility, and overall well-being.',
+        description: 'Raw honey is considered one of the most sattvic natural sweeteners, offering sweetness without the harsh effects of refined sugar. Its enzymatic activity supports digestion and helps maintain stable blood sugar levels. Honey contains trace minerals and antioxidants that nourish the nervous system and support cognitive function. The golden color of honey symbolizes the illumination of consciousness, and its smooth texture encourages slow, mindful consumption. Regular consumption helps develop appreciation for simple pleasures and supports the cultivation of contentment.'
+      },
+      {
+        category: 'Natural Sweeteners',
+        title: 'Dates',
+        image: '<|imagePlaceholder9|>',
+        summary: 'Sweet, juicy, and fattening. Increases life duration, purifies existence, and gives strength, health, happiness, and satisfaction.',
+        description: 'Dates embody the sattvic principle of foods that are naturally sweet and nourishing. Their high fiber content ensures gradual absorption of sugars, preventing energy crashes and mood swings. Dates are rich in potassium, magnesium, and B-vitamins, nutrients that support heart health and nervous system function. The dense nutritional profile of dates provides sustained energy for physical and mental activities. Their natural sweetness satisfies cravings without the guilt associated with processed sugars, supporting the development of healthy relationship with pleasure and indulgence.'
+      }
+    ];
+  </script>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+  <!-- Progress Bar -->
+  <div class="fixed top-0 left-0 h-1 bg-primary-500 dark:bg-primary-400 z-[60] transition-all duration-300 ease-out" id="progressBar" style="width: 0%;"></div>
+
+  <!-- Floating Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-gray-50/90 dark:bg-gray-900/90 border-b border-primary-500/20 dark:border-primary-600/20" data-aos="fade-down">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <h1 class="text-xl font-bold text-primary-700 dark:text-primary-300">Ayurvedic Food Consciousness</h1>
+        
+        <nav class="hidden md:flex space-x-6">
+          <a href="#home" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Home</a>
+          <a href="#overview" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Overview</a>
+          <a href="#categories" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Categories</a>
+          <a href="#effects" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Effects</a>
+          <a href="#guidelines" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Guidelines</a>
+          <a href="#conclusion" class="text-sm font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Conclusion</a>
+        </nav>
+
+        <button onclick="toggleDarkMode()" class="btn-interactive p-2 rounded-lg bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-300 hover:bg-primary-200 dark:hover:bg-primary-700 transition-all">
+          <i data-lucide="sun" id="sunIcon" class="w-5 h-5"></i>
+          <i data-lucide="moon" id="moonIcon" class="w-5 h-5" style="display: none;"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="min-h-screen">
+    <!-- Hero Section -->
+    <section id="home" class="py-40 bg-primary-50/50 dark:bg-gray-900" data-aos="fade-up">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-4xl mx-auto">
+          <h2 class="text-5xl font-bold mb-6 text-primary-700 dark:text-primary-300">
+            Ayurvedic Food Consciousness Guide
+          </h2>
+          <p class="text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">
+            Explore how various foods affect human consciousness through the lens of Ayurvedic principles, focusing on the three gunas: sattva, rajas, and tamas.
+          </p>
+          <div class="flex justify-center gap-4">
+            <a href="#overview" class="btn-interactive px-6 py-3 bg-primary-600 dark:bg-primary-500 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 transition-all">
+              Explore Categories
+            </a>
+            <a href="#effects" class="btn-interactive px-6 py-3 bg-accent-600 dark:bg-accent-500 text-white rounded-lg hover:bg-accent-700 dark:hover:bg-accent-600 transition-all">
+              Learn Effects
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Understanding the Three Gunas
+        </h2>
+        
+        <div class="grid md:grid-cols-2 gap-8 items-start mb-12">
+          <div class="space-y-4">
+            <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.scribd.com/document/904511460/In-the-Teaching-WPS-Office|9">
+              In the teachings of traditional yoga, foods are classified into three categories: sattva, rajas, and tamas. These are called gunas and represent the three fundamental qualities of nature.
+            </p>
+            
+            <p class="text-gray-700 dark:text-gray-300" data-ref="https://journals.lww.com/aips/fulltext/2025/07000/elucidating_the_paradigmatic_nexus_between_ego.21.aspx|29">
+              Satva is associated with clarity and knowledge, Rajas with activity and desire, and Tamas with inertia and ignorance. Disturbances in the equilibrium of these qualities influence consciousness and behavior.
+            </p>
+
+            <div class="pl-4 pr-3 py-3 border-l-4 border-primary-500 bg-primary-50/40 dark:bg-primary-900/30 rounded-r-lg">
+              <p class="text-sm font-medium text-primary-900 dark:text-primary-100 leading-relaxed" data-ref="https://www.linkedin.com/pulse/understanding-sattva-guna-psychology-achieving-balance-well-being|44">
+                <i data-lucide="info" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+                Key Insight: A food item rich in Sattva may promote clarity and tranquillity, while one with an abundance of Rajas might stimulate activity and restlessness.
+              </p>
+            </div>
+          </div>
+          
+          <img
+            src="https://cdn.qwenlm.ai/0fa0dd7b-15a3-478b-a540-4fcb662ad417/cd9237d7-7be2-44ab-845d-342d19b3c190/2a99d789-b50b-4388-a2be-6dad83133704.png?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXNvdXJjZV91c2VyX2lkIjoiMGZhMGRkN2ItMTVhMy00NzhiLWE1NDAtNGZjYjY2MmFkNDE3IiwicmVzb3VyY2VfaWQiOiJjZDkyMzdkNy03YmUyLTQ0YWItODQ1ZC0zNDJkMTliM2MxOTAiLCJyZXNvdXJjZV9jaGF0X2lkIjpudWxsfQ.-ujIT1s2AATzLrRUl0DsJZOzhhTzyRH7gT6mIFrfE0M"
+            alt="A minimalist three-part circular diagram illustrating the three gunas in Ayurveda. The circle is divided into three equal segments: the top segment filled with bright emerald green (#10b981) labeled 'SATTVIC' with symbols of fresh fruits and vegetables; the right segment filled with vibrant orange (#fb923c) labeled 'RAJASIC' with symbols of flames and active movement; the bottom-left segment filled with deep charcoal gray (#374151) labeled 'TAMASIC' with symbols of heavy, dense shapes. The background is soft white with subtle geometric lines connecting the segments. At the center of the circle is a small lotus flower symbol in light green. The overall composition uses clean, modern typography with sans-serif fonts for labels."
+            class="w-full rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300"
+          />
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="card-interactive p-6 bg-primary-50/50 dark:bg-primary-900/20 rounded-xl shadow-md">
+            <div class="flex items-center space-x-3 mb-3">
+              <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <i data-lucide="leaf" class="w-6 h-6 text-white"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-primary-700 dark:text-primary-300" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">Sattvic Foods</h3>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Pure, light, and abundant in prana. Promote mental clarity, tranquility, and overall well-being.
+            </p>
+          </div>
+
+          <div class="card-interactive p-6 bg-accent-50/50 dark:bg-accent-900/20 rounded-xl shadow-md">
+            <div class="flex items-center space-x-3 mb-3">
+              <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                <i data-lucide="flame" class="w-6 h-6 text-white"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-accent-700 dark:text-accent-300" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">Rajasic Foods</h3>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Stimulating and can lead to restlessness and agitation. Examples include excessive spicy or stimulating foods and caffeine.
+            </p>
+          </div>
+
+          <div class="card-interactive p-6 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md">
+            <div class="flex items-center space-x-3 mb-3">
+              <div class="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center">
+                <i data-lucide="cloud" class="w-6 h-6 text-white"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">Tamasic Foods</h3>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-300">
+              Believed to induce lethargy, inertia, and a lack of mental clarity. Examples include heavily processed or fried foods, artificial additives, and intoxicants.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Food Categories Section -->
+    <section id="categories" class="py-20 bg-primary-50/50 dark:bg-gray-800" data-aos="fade-up">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Food Categories &amp; Consciousness Effects
+        </h2>
+
+        <div class="category-tabs">
+          <button class="tab-button active" onclick="filterCategory('All')">All Categories</button>
+          <button class="tab-button" onclick="filterCategory('Fruits')">Fruits</button>
+          <button class="tab-button" onclick="filterCategory('Vegetables')">Vegetables</button>
+          <button class="tab-button" onclick="filterCategory('Nuts & Seeds')">Nuts &amp; Seeds</button>
+          <button class="tab-button" onclick="filterCategory('Grains & Legumes')">Grains &amp; Legumes</button>
+          <button class="tab-button" onclick="filterCategory('Natural Sweeteners')">Natural Sweeteners</button>
+        </div>
+
+        <div class="food-grid" id="foodGrid">
+          <!-- Food cards will be dynamically inserted here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Effects Section -->
+    <section id="effects" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Consciousness Effects of Food Consumption
+        </h2>
+
+        <div class="hs-accordion-group space-y-4">
+          <!-- Sattvic Effects -->
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-sattvic-effects">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="circle-check" class="w-6 h-6 text-green-600 dark:text-green-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Sattvic Food Effects on Consciousness</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-sattvic" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-sattvic-effects">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">
+                  Sattvic foods are described as pure, light, and abundant in prana (life force). They promote mental clarity, tranquility, and overall well-being. Examples include fresh/organic produce, quinoa, brown rice, lentils, chickpeas, nuts, seeds, and herbal teas. Their consumption is said to increase vitality, improve concentration, and heighten awareness.
+                </p>
+                
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC11992243/|74">
+                  Sattvic foods are described as fresh, nutrient-rich, naturally tasty, and light in the stomach. They are believed to increase life expectancy, inner and exterior strength, happiness, wisdom, health, and satisfaction. The Yogic diet, recommended during yoga practice, is predominantly Sattvic and emphasizes plant-based whole foods while limiting processed and high-glycaemic-index items.
+                </p>
+
+                <div class="pl-4 pr-3 py-3 border-l-4 border-primary-500 bg-primary-50/40 dark:bg-primary-900/30 rounded-r-lg">
+                  <p class="text-sm font-medium text-primary-900 dark:text-primary-100 leading-relaxed" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">
+                    <i data-lucide="star" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+                    Benefits: Increased vitality, improved concentration, and heightened awareness through sattvic food consumption.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rajasic Effects -->
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-rajasic-effects">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="zap" class="w-6 h-6 text-orange-600 dark:text-orange-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Rajasic Food Effects on Consciousness</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-rajasic" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-rajasic-effects">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">
+                  Rajasic foods are characterized as stimulating and can lead to restlessness and agitation. The text specifically mentions excessive spicy or stimulating foods and caffeine as examples of rajasic foods that make it difficult to achieve a calm state during yoga and meditation.
+                </p>
+                
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC11992243/|74">
+                  Rajasic foods are characterized by attributes like spiciness, sourness, excessive sweetness, or dryness. Consuming them is associated with intense passion, an active lifestyle, restlessness, melancholy, and suffering. These foods are said to activate the Vata and Pitta doshas. Examples include curd, nonvegetarian components, onion, garlic, spices like pepper and chilies, lentils, and pulses.
+                </p>
+
+                <div class="pl-4 pr-3 py-3 border-l-4 border-amber-500 bg-amber-50/40 dark:bg-amber-900/30 rounded-r-lg">
+                  <p class="text-sm font-medium text-amber-900 dark:text-amber-100 leading-relaxed" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC11992243/|74">
+                    <i data-lucide="triangle-alert" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+                    Caution: Rajasic foods can cause restlessness, melancholy, and suffering when consumed in excess.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tamasic Effects -->
+          <div class="hs-accordion card-interactive bg-white/80 backdrop-blur-sm dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <button class="hs-accordion-toggle w-full flex justify-between items-center p-4 text-left hover:bg-primary-50 dark:hover:bg-gray-700/50 transition-colors rounded-xl" id="hs-tamasic-effects">
+              <div class="flex items-center space-x-4">
+                <div class="flex-shrink-0 w-12 h-12 bg-gray-100 dark:bg-gray-900/30 rounded-lg flex items-center justify-center">
+                  <i data-lucide="moon" class="w-6 h-6 text-gray-600 dark:text-gray-400"></i>
+                </div>
+                <span class="font-semibold text-lg text-primary-700 dark:text-primary-300">Tamasic Food Effects on Consciousness</span>
+              </div>
+              <i data-lucide="chevron-down" class="hs-accordion-active:rotate-180 transition-transform duration-300 w-5 h-5 text-primary-600 dark:text-primary-400"></i>
+            </button>
+            <div id="hs-collapse-tamasic" class="hs-accordion-content hidden w-full overflow-hidden transition-[height] duration-300" aria-labelledby="hs-tamasic-effects">
+              <div class="p-6 pt-0 space-y-4">
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">
+                  Tamasic foods are believed to induce lethargy, inertia, and a lack of mental clarity. Examples provided are heavily processed or fried foods, artificial additives, and intoxicants.
+                </p>
+                
+                <p class="text-gray-700 dark:text-gray-300" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC11992243/|74">
+                  Tamasic foods are those that have been stored overnight, leftovers, or have become stale. This category includes non-vegetarians, fermented foods, bread, cakes, alcohol, meat, and underripe/overripe vegetables and fruits. Other characteristics include being overcooked, unclean, tasteless, or rotten. Consequences of consuming a Tamasic diet include feelings of laziness, lethargy, heaviness, irritability, doubt, accelerated aging, and heightened drowsiness.
+                </p>
+
+                <div class="pl-4 pr-3 py-3 border-l-4 border-red-500 bg-red-50/40 dark:bg-red-900/30 rounded-r-lg">
+                  <p class="text-sm font-medium text-red-900 dark:text-red-100 leading-relaxed" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC11992243/|74">
+                    <i data-lucide="octagon-alert" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+                    Risk: Tamasic foods can cause laziness, lethargy, heaviness, irritability, doubt, accelerated aging, and heightened drowsiness.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Guidelines Section -->
+    <section id="guidelines" class="py-20 bg-accent-50/50 dark:bg-gray-800" data-aos="fade-up">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-accent-700 dark:text-accent-300 text-center">
+          Practical Guidelines for Conscious Eating
+        </h2>
+
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+          <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-900 rounded-xl shadow-md">
+            <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://santoshayogainstitute.com/a-complete-guide-to-yogic-diet/|56">Mindful Eating Practices</h3>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+              A key principle of the yogic diet is mindful eating, which involves being fully present and aware during meals, savoring each bite, and appreciating the nourishment. This practice helps develop a deeper connection with the body's signals of hunger and satiety.
+            </p>
+            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+              <li class="flex items-start">
+                <i data-lucide="check" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Eat in a calm, peaceful environment</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Chew food slowly and thoroughly</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Express gratitude before meals</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="check" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Listen to your body's hunger cues</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-interactive p-6 bg-white/90 backdrop-blur-sm dark:bg-gray-900 rounded-xl shadow-md">
+            <h3 class="text-xl font-semibold text-accent-700 dark:text-accent-300 mb-4" data-ref="https://www.linkedin.com/posts/jayaram-mahalingam-25533513_monday-musings-this-week-is-around-fooddiet-activity-7256553713593405440-xDM6|43">Dietary Recommendations</h3>
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+              Here are foundational Ayurvedic approaches I recommend: Diet: Favor warm, cooked, and spiced foods. Avoid cold, raw, and processed items. Respect food combinations and seasonal variations.
+            </p>
+            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+              <li class="flex items-start">
+                <i data-lucide="circle-dot" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Favor fresh, organic, and locally sourced ingredients</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="circle-dot" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Prioritize plant-based whole foods</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="circle-dot" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Limit processed and refined foods</span>
+              </li>
+              <li class="flex items-start">
+                <i data-lucide="circle-dot" class="w-5 h-5 text-accent-600 dark:text-accent-400 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Include a variety of colors and textures</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card-interactive p-8 bg-white/90 backdrop-blur-sm dark:bg-gray-900 rounded-xl shadow-md">
+          <h3 class="text-2xl font-semibold text-accent-700 dark:text-accent-300 mb-6" data-ref="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2025.1616802/full|104">Achieving Mental Well-being Through Food</h3>
+          <p class="text-gray-700 dark:text-gray-300 mb-4">
+            Ayurveda holds that improving Sattva and achieving a balance between Rajas and Tamas are necessary for mental well-being (Rao, 2011). The causes of mental imbalance are addressed through dietary modifications that support the natural rhythms of the body and mind.
+          </p>
+          <p class="text-gray-700 dark:text-gray-300" data-ref="https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2016.00057/pdf|102">
+            Sattva is the contented state, rajas an excited state whereas tamas relates to a lethargic disposition, i.e., foods can induce these states of consciousness.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conclusion Section -->
+    <section id="conclusion" class="py-20 bg-white/80 dark:bg-gray-900" data-aos="fade-up">
+      <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-8 text-primary-700 dark:text-primary-300 text-center">
+          Integrating Ayurvedic Wisdom into Daily Life
+        </h2>
+
+        <div class="max-w-4xl mx-auto space-y-6">
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed" data-ref="https://link.springer.com/article/10.1186/s12906-025-05130-3|7">
+            Ayurveda has an elaborate description of various kinds of food, diets and eating practices that aim to create harmony between body, mind, and consciousness.
+          </p>
+
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed" data-ref="https://www.researchgate.net/publication/395953081_Traditional_Food_and_Psychological_Behaviour_An_Ayurvedic_Perspective_on_Tri_Guna_and_Tri_Dosa|4">
+            This research lies at the confluence of Ayurvedic diet classifications (Tri Guna and Tri Dosa) and psychological well-being, exploring how food choices influence mental health and consciousness.
+          </p>
+
+          <div class="pl-4 pr-3 py-3 border-l-4 border-primary-500 bg-primary-50/40 dark:bg-primary-900/30 rounded-r-lg">
+            <p class="text-sm font-medium text-primary-900 dark:text-primary-100 leading-relaxed" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC9893901/|10">
+              <i data-lucide="lightbulb" class="inline-block w-4 h-4 mr-1.5 -mt-0.5"></i>
+              Important Note: It has been stated in Ayurveda texts that vitiation of Rajas and Tamas Gunas lead to mental health problems which in turn influence physical health.
+            </p>
+          </div>
+
+          <p class="text-lg text-gray-700 dark:text-gray-300 leading-relaxed" data-ref="https://pmc.ncbi.nlm.nih.gov/articles/PMC4815005/|3">
+            This article briefly reviews the parallels in Ayurveda and biomedicine and draws attention to the need for a deeper engagement with traditional knowledge systems that address the holistic relationship between food, consciousness, and well-being.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-primary-700 dark:bg-gray-900 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-sm">&copy; 2024 Ayurvedic Food Consciousness Guide. Educational resource based on traditional Ayurvedic principles.</p>
+      <p class="text-xs mt-2 text-primary-200 dark:text-gray-400">For informational purposes only. Consult qualified healthcare practitioners for personalized advice.</p>
+    </div>
+  </footer>
+
+  <!-- Food Modal -->
+  <div id="foodModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 id="modalTitle" class="text-2xl font-bold mb-4 text-primary-700 dark:text-primary-300"></h3>
+      <p id="modalSummary" class="text-gray-700 dark:text-gray-300 leading-relaxed"></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize everything after DOM loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      lucide.createIcons();
+
+      // Initialize AOS animations
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+      });
+
+      // Initialize Preline components
+      setTimeout(() => {
+        window.HSStaticMethods.autoInit();
+      }, 100);
+
+      // Initialize citation system
+      initCitationSystem();
+
+      // Populate food grid
+      const foodGrid = document.getElementById('foodGrid');
+      foods.forEach(food => {
+        const card = document.createElement('div');
+        card.className = 'food-card card-interactive';
+        card.dataset.category = food.category;
+        card.innerHTML = `
+          <img src="https://cdn.qwenlm.ai/0fa0dd7b-15a3-478b-a540-4fcb662ad417/cd9237d7-7be2-44ab-845d-342d19b3c190/7987bd93-563b-41b7-9558-76f500fcd254.png?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZXNvdXJjZV91c2VyX2lkIjoiMGZhMGRkN2ItMTVhMy00NzhiLWE1NDAtNGZjYjY2MmFkNDE3IiwicmVzb3VyY2VfaWQiOiJjZDkyMzdkNy03YmUyLTQ0YWItODQ1ZC0zNDJkMTliM2MxOTAiLCJyZXNvdXJjZV9jaGF0X2lkIjpudWxsfQ.-ujIT1s2AATzLrRUl0DsJZOzhhTzyRH7gT6mIFrfE0M" alt="${food.title} - ${food.summary}" class="food-image">
+          <div class="food-info">
+            <h3 class="food-title">${food.title}</h3>
+            <p class="food-summary">${food.summary}</p>
+          </div>
+        `;
+        card.addEventListener('click', () => openModal(food));
+        foodGrid.appendChild(card);
+      });
+
+      // Progress bar functionality
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById('progressBar').style.width = scrolled + '%';
+      });
+
+      // Close modal on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
